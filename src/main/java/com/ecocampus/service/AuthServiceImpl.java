@@ -10,9 +10,9 @@ import com.ecocampus.entity.Profile;
 import com.ecocampus.entity.enums.Role;
 import com.ecocampus.mapper.UserMapper;
 import com.ecocampus.repository.UserRepository;
-import com.ecocampus.repository.ProfileRepository;
 import com.ecocampus.config.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -29,9 +30,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private ProfileRepository profileRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -69,24 +67,24 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public MessageResponse registerUser(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return new MessageResponse("Erreur: Cet email est déjà utilisé!");
+        String email = request.getEmail().trim().toLowerCase();
+
+        if (userRepository.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cet email est déjà utilisé.");
         }
 
-        // Création de l'utilisateur
         User user = userMapper.toEntity(request);
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.ETUDIANT); // Par défaut, rôle étudiant
+        user.setRole(Role.ETUDIANT);
 
-        userRepository.save(user);
-
-        // Création du profil
         Profile profile = new Profile();
         profile.setTelephone(request.getTelephone());
         profile.setDepartement(request.getDepartement());
         profile.setUser(user);
+        user.setProfile(profile);
 
-        profileRepository.save(profile);
+        userRepository.save(user);
 
         return new MessageResponse("Utilisateur inscrit avec succès!");
     }
