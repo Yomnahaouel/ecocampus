@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         // Routes publiques
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/plats/public/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/categories/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/restaurants/**")).permitAll()
