@@ -1,0 +1,44 @@
+package com.ecocampus.dto.request;
+
+import com.ecocampus.entity.enums.Role;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class RegisterRequest {
+
+    @NotBlank(message = "L'email est obligatoire")
+    @Email(message = "Format d'email invalide")
+    private String email;
+
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caracteres")
+    @JsonAlias({"motDePasse", "motdepasse"})
+    private String password;
+
+    @NotBlank(message = "Le nom est obligatoire")
+    @JsonAlias({"name", "lastName", "lastname"})
+    private String nom;
+
+    @NotBlank(message = "Le prenom est obligatoire")
+    @JsonAlias({"firstName", "firstname"})
+    private String prenom;
+
+    @JsonAlias({"phone", "tel"})
+    private String telephone;
+
+    @JsonAlias({"department"})
+    private String departement;
+
+    private String adresse;
+
+    @JsonAlias({"restaurantName", "nomRestaurant", "nomResto", "restoNom"})
+    private String restaurantNom;
+
+    private Role role = Role.ETUDIANT;
+}
