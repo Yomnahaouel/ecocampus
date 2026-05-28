@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/plats")
 public class PlatController {
@@ -52,19 +51,19 @@ public class PlatController {
 
     // Routes protégées (nécessitent authentification)
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CAFETERIA_RESP')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT')")
     public ResponseEntity<PlatResponse> createPlat(@Valid @RequestBody PlatRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(platService.createPlat(request));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CAFETERIA_RESP')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT')")
     public ResponseEntity<PlatResponse> updatePlat(@PathVariable Long id, @Valid @RequestBody PlatRequest request) {
         return ResponseEntity.ok(platService.updatePlat(id, request));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CAFETERIA_RESP')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT')")
     public ResponseEntity<Void> deletePlat(@PathVariable Long id) {
         platService.deletePlat(id);
         return ResponseEntity.noContent().build();

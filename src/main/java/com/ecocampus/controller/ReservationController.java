@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController {
@@ -53,7 +52,7 @@ public class ReservationController {
     }
 
     @GetMapping("/restaurant/{restaurantId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CAFETERIA_RESP')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT')")
     public ResponseEntity<List<ReservationResponse>> getReservationsByRestaurant(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(reservationService.getReservationsByRestaurant(restaurantId));
     }
